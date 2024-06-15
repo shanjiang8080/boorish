@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block head %}
+<link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-left-o.css' rel='stylesheet'>
+<link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-left-r.css' rel='stylesheet'>
+<link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-right-o.css' rel='stylesheet'>
+<link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-right-r.css' rel='stylesheet'>
+{% endblock %}
+{% block title %}Tags{% endblock %}
+{% block content %}
+    <div id="searchbox">
+        <form action="/gallery/tags/" method="get">
+            <input id="tag_search" type="text" name="tag_search" placeholder="Search tags...">
+            <input type="submit" value="Search!">
+        </form>
+</div>
+
+    <div id="tag_container">
+        {% for tag in tags %}
+        <a href="/gallery/?tag_list={{tag.name}}" class="tag {{ tag.color }}">{{tag.name}}: {{tag.image__count}}</a> <br>
+        {% endfor %}
+    </div>
+    <div class='paginator'>
+        {% if tags.has_previous %}
+        <a class='page_button' id='first_page' href="?page=1" class=prev><i class="gg-arrow-left-r"></i></a>
+        <a class='page_button' href="?page={{ tags.previous_page_number }}" class=prev><i class="gg-arrow-left-o"></i></a>
+        {% else %}
+        <a class='page_button deactivated' id='first_page' href="?page=1" class=prev><i class="gg-arrow-left-r"></i></a>
+        <a class='page_button deactivated' href="?page=1" class=prev><i class="gg-arrow-left-o"></i></a>
+        {% endif %}
+        <p class='page_count'> {{tags.number}} </p>
+        {% if tags.has_next %}
+        <a class='page_button' href="?page={{ tags.next_page_number }}" class=next><i class="gg-arrow-right-o"></i></a>
+        <a class='page_button' id='last_page' href="?page={{ tags.paginator.num_pages }}" class=next><i class="gg-arrow-right-r"></i></a>
+        {% else %}
+        <a class='page_button deactivated' href="?page={{ tags.number }}" class=next><i class="gg-arrow-right-o"></i></a>
+        <a class='page_button deactivated' id='last_page' href="?page={{ tags.paginator.num_pages }}" class=next><i class="gg-arrow-right-r"></i></a>
+        {% endif %}
+    </div>
+
+
+    <form action="/gallery/tags/" method="post">
+        {% csrf_token %}
+        <label for="tag_upload">Add new tag</label>
+        <input id="tag_upload" name="name" type='text'></input> <!--auto submit by doing onchange="form.submit()"-->
+        <fieldset>
+            <legend>Tag Category</legend>
+            
+            <input name="category" type='radio' id='tag_normal' value="N" checked>
+            <label for="tag_normal">Normal</label><br />
+            <input name="category" type='radio' id='tag_char' value="G">
+            <label for="tag_char">Character</label><br />
+            <input name="category" type='radio' id='tag_artist' value="R">
+            <label for="tag_artist">Artist</label><br />
+            <input name="category" type='radio' id='tag_cprt' value="P">
+            <label for="tag_cprt">Copyright</label><br />
+
+        </fieldset>
+
+        <input id='submit' type='submit' value="do it"/>
+    </form>
+{% endblock %}

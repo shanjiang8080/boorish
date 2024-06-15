@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% load static %}
+
+    {% block head %} {% endblock %}
+
+    <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>{% block title %} Gallery {% endblock %}</title>
+</head>
+<body>
+    <div id="header">
+        <div id="searchbox">
+            <form action="/gallery/" method="get">
+                <input id="tag_list" type="text" name="tag_list" placeholder="Enter tags...">
+                <input type="submit" value="Search!">
+            </form>
+        </div>
+        <div id="home-link">
+            <a href="/gallery/">no logo or anything yet but go home here</a>
+        </div>  
+        <div id="upload-link">
+            <a href="/gallery/upload/">upload images here</a>
+        </div>  
+        <div id="tags-link">
+            <a href="/gallery/tags/">check out tags</a>
+        </div>  
+
+        <div id="login">
+            {% if user.is_authenticated %} 
+            <p>hey you're logged in</p>
+            {% else %}
+            <p>hey you're not logged in</p>
+            <a href="/gallery/accounts/login/">click the link</a>
+            {% endif %}
+        </div>
+    </div>
+            <div class='content'>
+                {% block content %}{% endblock %}
+            </div>
+    <div class='footer'>
+    </div>
+    
+</body>
+</html>

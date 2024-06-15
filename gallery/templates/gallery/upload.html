@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} Upload Media {% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+    {% if not errors %}
+    {% else %}
+    {% for error in errors %}
+        <h2 class="error">{{ error }}</h2>
+    {% endfor %}
+    {% endif %}
+    <form action="/gallery/upload/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="upload_box">Upload Media</label>
+        <input id="upload_box" name="uh" type="file" accept="image/*, video/*" multiple ></input> <!--auto submit by doing onchange="form.submit()"-->
+        <input id='submit' type='submit' value="do it"/>
+    </form>
+{% else %}
+    <p>You must be logged in to upload media.</p>
+{% endif %}
+{% endblock %}
