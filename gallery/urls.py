@@ -10,6 +10,8 @@ urlpatterns = [
     path("<int:image_id>/", views.detail, name="detail"),
     path("upload/", views.upload, name="upload"),
     path("tags/", views.tags, name="tags"),
-    path("ajax/add_tag", views.aj_add_tag, name="ajax add tag to image"),
+    path("a/add_tag", views.aj_add_tag, name="ajax add tag to image"),
+    path("a/view_image", views.aj_view_image, name="ajax view image"),
+    path("a/search_tag", views.aj_get_matching_tags, name="ajax get tags"),
     # path('', include(('django.contrib.auth.urls', 'django.contrib.auth'), namespace='login')),
 ]

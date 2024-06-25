@@ -5,10 +5,39 @@
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-left-r.css' rel='stylesheet'>
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-right-o.css' rel='stylesheet'>
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-right-r.css' rel='stylesheet'>
+
+    <style id='image_transition'></style>
 {% endblock %}
 
 {% block content %}
-<div class='container'>
+<div id='overlay'>
+    <div id='overlay_container'>
+        <div id='focus_image'></div>
+        <div id='focus_info'>
+            <!-- not populated by django directly but by AJAX -->
+            <div id='focus_date'>
+            </div>
+            <div id='focus_votes'>
+            </div>
+            
+            <div id='focus_tags'>
+            </div>
+            {% if user.is_authenticated %}
+            {% csrf_token %}
+            <div id='focus_add_tag' class='searchbox_wrapper'>
+                <input type="text" placeholder="Enter tag" class='textbox' id="add_tag_input" onfocusout="hide_add_tag_suggestions()" autocomplete="off"></input>
+                <div class="popup_text_box" id='add_tag_box_popup'>
+                </div>
+                <p onclick="send_add_tag()"><br><br><br>Click this!!!!! to add tag</p>
+            </div>
+            {% endif %}
+        </div>    
+    </div>
+    <div id='overlay_bg' onclick="remove_overlay()"></div>
+
+
+</div>
+<div class='container' id='container'>
     <div class="tag-con">
         <div class="tags">
             {% for tag in image_tags %}
@@ -22,10 +51,10 @@
                 {% for image in page_images %}
                         {% if image.is_video %}
                         <div class='image video'>
-                        <a href="{% url 'gallery:detail' image.id %}"><img src="/thumbnails/{{ image.id }}.jpg" alt=""></a>
+                        <img class="thumb" src="/thumbnails/{{ image.id }}.jpg" alt="">
                         {% else %}
                         <div class='image'>
-                        <a href="{% url 'gallery:detail' image.id %}"><img src="/thumbnails/{{ image.id }}.jpg" alt=""></a>
+                        <img class="thumb" src="/thumbnails/{{ image.id }}.jpg" alt="">
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -53,4 +82,8 @@
         </div>
     </div>
 </div>
-    {% endblock %}
+
+<!-- the place you load this is relevant! placing in the head doesn't work. -->
+{% load static %}
+<script src="{% static 'gallery/gallery.js' %}"></script>
+{% endblock %}

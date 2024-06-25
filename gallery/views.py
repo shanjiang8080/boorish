@@ -17,8 +17,9 @@ from django.contrib.auth import login, authenticate
 from .models import Image, Tag # tag unused... as of now.
 from django.db.models import Count
 from . import uploads
+import gallery
 # Create your views here.
-IMAGES_PER_PAGE = 20 # obviously too low for now. but to demonstrate. change to 50 for normal.
+IMAGES_PER_PAGE = 50 # obviously too low for now. but to demonstrate. change to 50 for normal.
 
 # AJAX stuff
 def aj_add_tag(request):
@@ -26,16 +27,55 @@ def aj_add_tag(request):
         form = ImageTagForm(request.POST)
         try:
             tag = Tag.objects.get(name=request.POST["name"])
-        except ValueError:
-            return JsonResponse({"status":"not a valid tag", "new tag":""}, status=400)
-        if form.is_valid():
-            file = Image.objects.get(pk=form.cleaned_data['id'])
-            if not file.tags.contains(tag):
-                file.tags.add(tag)
-        else:
-            raise ValueError(f"Invalid data! {form}")
-    return JsonResponse({"new tag":tag})
+        except gallery.models.Tag.DoesNotExist:
+            return JsonResponse({"status":"Error", "err_code":"not a valid tag"}, status=400)
+        file = Image.objects.get(pk=request.POST['file'])
+        
+        if tag in file.tags.all():
+            return JsonResponse({"status":"Error", "err_code":"duplicate"}, status=400)
+        
+        file.tags.add(tag)
+    return JsonResponse({"status":"OK", "color": tag.color})
 
+def aj_view_image(request):
+    # not sending or retrieving data...
+    # not entirely sure how ajax works...
+    # but send the tags, and the full res image, and upvotes
+    if request.method == "GET":
+        file = Image.objects.get(pk=request.GET['id'])
+        tags = []
+        for tag in file.tags.all():
+            tag_json = {
+                'name': tag.name,
+                'color': tag.color
+            }
+            tags.append(tag_json)
+        response = {
+            'tags': tags,
+            'votes': file.votes,
+            'date': file.pub_date,
+            'is_video': file.is_video,
+            'file_name': file.file.name,
+        }
+        return JsonResponse(response, safe=False)
+    else:
+        raise ValueError
+    
+def aj_get_matching_tags(request):
+    if request.method == "GET":
+        query = request.GET['text']
+        # nope! i need to manually serialize it.
+        tags = []
+        for tag in Tag.objects.filter(name__icontains=query).annotate(Count("image")).order_by("-image__count"):
+            tags.append({
+                'name': tag.name,
+                'color': tag.color,
+                'tag_count': tag.images.count(),
+            })
+
+        return JsonResponse({'tags':tags})
+    else:
+        raise ValueError
 
 def detail(request, image_id):
     file = Image.objects.get(id=image_id)
@@ -67,6 +107,8 @@ def unfiltered(request):
         form = SearchForm(request.GET)
         if (form.data.get('tag_list' , '').strip() != ''):
             tags = form.data['tag_list'].split(",")
+
+            if tags[-1] in ('', ' '): tags.pop()
 
             images = Image.objects.all()
             for tag in tags:

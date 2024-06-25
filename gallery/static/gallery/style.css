@@ -1,8 +1,18 @@
+#header {
+  display: flex;
+  z-index: 3;
+  position: sticky;
+  top: 0;
+  background-color: aqua; /* temp for debugging */
+  height: 3em;
+}
+
 label, input, p, .tag, .page_button {
   font-family: "Public Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
+  overflow-wrap: break-word;
 }
 
 .N {
@@ -23,7 +33,9 @@ body {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  background-color: blanchedalmond;
 }
+
 
 .container {
   display: flex;
@@ -32,15 +44,21 @@ body {
 .imagecontainer {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .tag-con {
   flex-grow: 1;
+  z-index: 0;
+  /* experimental, looks neat? */
+  transform: rotate(1deg);
+  font-size: 1.5em;
 }
 
 .tags {
   position: sticky;
-  top: 0;
+  top: 7vh;
+  z-index: 0;
 }
 
 .gallery {
@@ -55,11 +73,12 @@ body {
     width: 150px;
     margin: 0 0.5rem 0.5rem 0;
     display: inline-block;
-    width: 100%;
-    border: solid 1px rgb(50, 42, 45);
+    width: 95%;
+    border: solid rgb(255, 255, 255);
+    border-width: 5px 5px 20px 5px;
     padding: 0px;
     box-shadow: 1px 5px 5px rgba(16, 3, 48, 0.2);
-    border-radius: 5px;
+    /* border-radius: 5px; */
     transition: all .25s ease-out;
     &:hover img {
     }
@@ -69,19 +88,28 @@ body {
 
     img {
       width: 100%;
-      border-radius: 4px;
+      /* border-radius: 4px; */
       transition: all .25s ease-in-out;
       display: block;
     }
   }
   .video {
-    border: solid 2px rgb(89, 0, 255);
+    border-image-source: url('/static/gallery/images/tape.svg');
+    border-image-repeat: repeat;
+    border-image-slice: 3;
+    
+    border-width: 15px 5px 15px 5px;
+    /*
+    border: solid rgb(50, 42, 45);
+    border-width: 15px 5px 15px 5px;
+    */
     &:hover img {
     }
     &:hover {
       border-color: rgb(255, 80, 162);
     }
   }
+
 }
 
 .page_button {
@@ -125,34 +153,238 @@ a.deactivated {
   color: grey !important;
 }
 
-.image {
-  width: 70%;
-}
+
 
 #media {
   display: flex;
 }
 
 @media only screen and (max-width: 767px) {
-  div {
+  #header {
     background-color: blue;
   }
 }
 
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
 @media only screen and (min-width: 480px) and (max-width: 767px) {
-  div {
+  #header {
     background-color: green;
+  }
+  .tag-con {
+    transform: none !important;
   }
 }
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {
-  div {
+  #header {
     background-color: red;
   }
-  #media {
+  #overlay_container {
+    flex-direction: column !important;
+  }
+  #focus_image {
+    height: auto !important;
+    width: 100vw !important;
+  }
+
+  #focus_file {
+    width: 100vw !important;
+    height: auto !important;
+  }
+  .tag-con {
+    transform: none !important;
+    display: none !important;
+  }
+  .gallery {
+    width: 95% !important;
+    columns: 2 100px;
+
+  }
+
+  /* for the thing that isn't used really
+    #media {
     flex-direction: column;
   }
 
+  .image {
+    width: 100%;
+  }
+  */
+
+}
+
+
+#overlay {
+  position: fixed;
+  display: none; /* hidden by default */
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+
+
+#overlay_container {
+  display:flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+#overlay_bg {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+}
+
+#focus_image {
+  height: 85vh;
+  width: 70vw;
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 4em;
+  z-index: 5;
+
+}
+
+#focus_file {
+  height: 85vh;
+  width: 70vw;
+  object-fit: contain;
+  animation-name: unhide;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+}
+
+#focus_info {
+  width: 15em;
+  margin-top: 8vh;
+  z-index: 3;
+  height: fit-content;
+}
+
+.remove_scrolling {
+  height: 100%;
+  overflow-y: hidden !important;
+}
+
+.hide_scrollbar {
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+}
+.hide_scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
+.popup_text_box {
+  display: none;
+  position: absolute;
+  flex-direction: column;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  cursor: pointer;
+
+}
+
+/*
+.textbox:focus + .popup_text_box {
+  display: flex !important;
+}
+*/
+
+.searchbox_wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.box_container {
+  height: 30px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  margin-top: 5px;
+  background-color: darksalmon;
+  &:hover {
+    background-color: coral;
+  }
+}
+
+.box_left {
+  /* idk */
+}
+
+.box_right {
+  /* idk */
+}
+
+.box_separator {
+  flex-grow: 1;
+  border-bottom: dotted 2px black;
+}
+
+#searchbox {
+  z-index: -10;
+}
+
+.blur {
+  animation-name: blur_anim;
+  animation-duration: 1s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+
+@keyframes blur_anim {
+  from {
+    backdrop-filter: blur(0px);
+    background-color: rgba(255, 235, 207, 0)
+    
+  }
+  to {
+    backdrop-filter: blur(5px); 
+    background-color: rgba(64, 36, 35, 0.2);
+  }
+}
+
+@keyframes unblur_anim {
+  from {
+    filter: blur(5px);
+    background-color: rgba(64, 36, 35, 0.2);
+  }
+  to {
+    filter: blur(0px);
+    background-color: rgba(255, 235, 207, 0)
+
+  }
+}
+
+@keyframes unhide {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+.unblur {
+  /**/
+  animation-duration: 0.25s;
+  animation-name: unblur_anim;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
 }

@@ -8,7 +8,7 @@
     <img class='media image' src="/{{ file.file }}">
 {% endif %} 
 <div id="sidebar">
-    <p>votes: {{ file.votes}}</p>
+    <p>votes: {{ file.votes }}</p>
     <p> tags: </p>
     <ul>
         {% for tag in none %}
@@ -24,11 +24,13 @@
             <li><a href="/gallery/?tag_list={{tag.name}}" class="tag {{ tag.color }}">{{tag.name}}</a></li>
         {% endfor %}
     </ul>
+    
     <form method="post">
         {% csrf_token %}
         <input id="new_tag" type="text" name="name" placeholder="add tag"/>
         <input id='submit' type='submit' value="do it"/>
         <input id="image_id" type='hidden' name='id' value="{{ file.id }}"/>
     </form>
+
 </div>
 {% endblock %}

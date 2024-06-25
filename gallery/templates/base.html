@@ -4,32 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% load static %}
-
-    {% block head %} {% endblock %}
+    {% block head %} 
+        {% load static %}
+    {% endblock %}
 
     <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <!-- CSS ICONS -->
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/add-r.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/tag.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/log-in.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/home-alt.css' rel='stylesheet'>
+    
     <title>{% block title %} Gallery {% endblock %}</title>
 </head>
-<body>
+<body class="hide_scrollbar" id='body'>
     <div id="header">
         <div id="searchbox">
             <form action="/gallery/" method="get">
-                <input id="tag_list" type="text" name="tag_list" placeholder="Enter tags...">
-                <input type="submit" value="Search!">
+                <div class='searchbox_wrapper'> 
+                    <input id="tag_list" class='textbox' type="text" name="tag_list" placeholder="Enter tags..." autocomplete="off" onfocusout="hide_search_suggestions()">
+                    <div class="popup_text_box" id="search_box_popup">
+                        <!-- to be filled with stuff via JS -->
+                    </div>    
+                    <input type="submit" value="Search!">
+                </div>
             </form>
         </div>
         <div id="home-link">
-            <a href="/gallery/">no logo or anything yet but go home here</a>
+            <a href="/gallery/"><i class="gg-home-alt"></i></a>
         </div>  
         <div id="upload-link">
-            <a href="/gallery/upload/">upload images here</a>
+            <a href="/gallery/upload/"><i class="gg-add-r"></i></a>
         </div>  
         <div id="tags-link">
-            <a href="/gallery/tags/">check out tags</a>
+            <a href="/gallery/tags/"><i class="gg-tag"></i></a>
         </div>  
 
         <div id="login">
@@ -46,6 +58,7 @@
             </div>
     <div class='footer'>
     </div>
-    
+{% load static %}
+<script src="{% static 'gallery/search_box.js' %}"></script>
 </body>
 </html>

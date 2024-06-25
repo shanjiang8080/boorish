@@ -24,7 +24,7 @@ def rename_callback(sender, **kwargs):
         if ext in (".mp4", ".webm"):
             file.is_video = True
             img_output_path = settings.MEDIA_ROOT + f"/thumbnails/{file.id}.jpg"
-            subprocess.Popen(['ffmpeg', '-ss', '00:00:00.000', '-i', new_path, '-vframes', '1', 'scale="350:-1"', img_output_path])
+            subprocess.Popen(['ffmpeg', '-ss', '00:00:00.000', '-i', new_path, '-vframes', '1', '-vf', 'scale=350:-1', img_output_path])
         else:
             if ext in ('.gif', '.webp'):
                 if subprocess.check_output(['identify', '-format', '%n', new_path]) != '1':
