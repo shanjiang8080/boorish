@@ -192,6 +192,7 @@ a.deactivated {
     width: 100vw !important;
     height: auto !important;
   }
+
   .tag-con {
     transform: none !important;
     display: none !important;
@@ -252,7 +253,6 @@ a.deactivated {
   margin-left: auto;
   margin-right: auto;
   margin-top: 4em;
-  z-index: 5;
 
 }
 
@@ -263,6 +263,9 @@ a.deactivated {
   animation-name: unhide;
   animation-duration: 0.3s;
   animation-timing-function: linear;
+  z-index: 5;
+  position: relative;
+
 }
 
 #focus_info {
@@ -339,19 +342,19 @@ a.deactivated {
 
 .blur {
   animation-name: blur_anim;
-  animation-duration: 1s;
+  animation-duration: 0.5s;
   animation-timing-function: ease-in;
   animation-fill-mode: both;
 }
 
 @keyframes blur_anim {
   from {
-    backdrop-filter: blur(0px);
+    filter: blur(0px);
     background-color: rgba(255, 235, 207, 0)
     
   }
   to {
-    backdrop-filter: blur(5px); 
+    filter: blur(5px); 
     background-color: rgba(64, 36, 35, 0.2);
   }
 }
@@ -379,6 +382,21 @@ a.deactivated {
     opacity: 1;
   }
 }
+@keyframes unhide_instant {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  51% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 
 
 .unblur {
@@ -388,3 +406,4 @@ a.deactivated {
   animation-timing-function: ease-out;
   animation-fill-mode: both;
 }
+

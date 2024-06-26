@@ -59,6 +59,8 @@ function css_transition(pre, elem) {
 
     }
     
+    if (window.matchMedia('only screen and (min-width: 480px) and (max-width: 767px)').matches) real_left += 8
+
     document.getElementById('image_transition').innerHTML = 
     `
     @keyframes transition {
@@ -88,6 +90,7 @@ function css_transition(pre, elem) {
     `;
     elem.className = "thumb transition";
     elem.parentElement.className = 'image transition_parent';
+    // overthinking it. just add another preview with the same src it'll get cached...
 
 }
 
@@ -115,9 +118,11 @@ function hide_add_tag_suggestions() {
 
 function unblur_overlay() {
     document.getElementById("container").className = "container unblur";
+
 }
 function blur_overlay() {
     document.getElementById("container").className = "container blur";
+    
 }
 
 function remove_overlay() {
@@ -297,6 +302,8 @@ for (let i = 0; i < images.length; i++) {
             document.getElementById('focus_image').innerHTML = ""
 
             var newElem;
+            var prevElem;
+            const image_spot = document.getElementById("focus_image");
             if (json['is_video']) {
                 newElem = document.createElement('video');
                 newElem.setAttribute('controls', true);
@@ -304,7 +311,6 @@ for (let i = 0; i < images.length; i++) {
 
                 // add element to image
                 newElem.src = `/${json['file_name']}`;
-                const image_spot = document.getElementById("focus_image");
                 image_spot.appendChild(newElem)
 
                 newElem.addEventListener('loadedmetadata', function(e){
@@ -326,16 +332,16 @@ for (let i = 0; i < images.length; i++) {
 
                 // add element to image
                 newElem.src = `/${json['file_name']}`;
-                const image_spot = document.getElementById("focus_image");
+                newElem.style.backgroundImage = `url("/thumbnails/${image_id}.jpg")`;
+                newElem.style.backgroundPosition = 'center';
+                newElem.style.backgroundRepeat = 'no-repeat';
+                newElem.style.backgroundSize = 'contain';
                 image_spot.appendChild(newElem)
 
                 css_transition(images[i].getBoundingClientRect(), images[i]);
 
+            }
 
-
-
-            }            
-            
             
 
             // adding the tags to the overlay
@@ -361,7 +367,7 @@ for (let i = 0; i < images.length; i++) {
             // that's it! I think...
         })
         .catch((error) => {
-            console.log(`Something broke. This, to be precise: ${error}`)
+            console.log(`Something broke when focusing an image. This, to be precise: ${error}`)
         });
     };
 };
