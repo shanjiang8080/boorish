@@ -11,24 +11,27 @@
 
 {% block content %}
 <div id='overlay'>
-    <div id='overlay_container'>
+    <div id='overlay_container' class='hide_scrollbar remove_horizontal_scrolling'>
         <div id='focus_image'></div>
         <div id='focus_info'>
             <!-- not populated by django directly but by AJAX -->
+            <!--
+            honestly i don't care about votes or the date tbh
             <div id='focus_date'>
             </div>
             <div id='focus_votes'>
             </div>
-            
-            <div id='focus_tags'>
+            -->
+
+            <div id='focus_tags' class='tags hide_scrollbar'>
             </div>
             {% if user.is_authenticated %}
             {% csrf_token %}
             <div id='focus_add_tag' class='searchbox_wrapper'>
-                <input type="text" placeholder="Enter tag" class='textbox' id="add_tag_input" onfocusout="hide_add_tag_suggestions()" autocomplete="off"></input>
+                <input type="text" placeholder="Enter tag..." class='textbox' id="add_tag_input" onfocusout="hide_add_tag_suggestions()" autocomplete="off"></input>
                 <div class="popup_text_box" id='add_tag_box_popup'>
                 </div>
-                <p onclick="send_add_tag()"><br><br><br>Click this!!!!! to add tag</p>
+                <a onclick="send_add_tag()" class='search_button'><i class="gg-math-plus"></i></a>
             </div>
             {% endif %}
         </div>    
@@ -41,7 +44,20 @@
     <div class="tag-con">
         <div class="tags">
             {% for tag in image_tags %}
-            <a href="/gallery/?tag_list={{tag.name}}" class="tag {{ tag.color }}">{{tag.name}}</a> <br>
+            <div class='tag_paper'>
+                <div class='tag_left_part {{ tag.color }}'>
+                </div>
+
+                <div class='tag_text'>
+                    <a href="/gallery/?tag_list={{tag.name}}" class="link tag {{ tag.color }}">{{tag.name}}
+                        <svg class="link__graphic link__graphic--stroke link__graphic--scribble" width="100%" height="9" viewBox="0 0 101 9"><path d="M.426 1.973C4.144 1.567 17.77-.514 21.443 1.48 24.296 3.026 24.844 4.627 27.5 7c3.075 2.748 6.642-4.141 10.066-4.688 7.517-1.2 13.237 5.425 17.59 2.745C58.5 3 60.464-1.786 66 2c1.996 1.365 3.174 3.737 5.286 4.41 5.423 1.727 25.34-7.981 29.14-1.294" pathLength="1"></path></svg>
+                    </a>
+                </div>
+                <div class='hook_con'>
+                    <img class='hook' src='/static/gallery/images/hook.svg'>
+                </div>
+            </div>
+            
             {% endfor %}
         </div>    
     </div>
@@ -51,12 +67,28 @@
                 {% for image in page_images %}
                         {% if image.is_video %}
                         <div class='image video'>
-                        <img class="thumb" src="/thumbnails/{{ image.id }}.jpg" alt="">
+                            <hr style="
+                                        border: none;
+                                        position: absolute;
+                                        border-bottom: 4px dashed #fff8f1;
+                                        width: 100%;
+                                        border-top: 4px dashed #fff8f1;
+                                        top: -1.25em;
+                                      ">
+                                      <img class="thumb" src="/thumbnails/{{ image.id }}.jpg" alt="">
+                            <hr style="
+                                        border: none;
+                                        position: absolute;
+                                        border-bottom: 4px dashed #fff8f1;
+                                        width: 100%;
+                                        border-top: 4px dashed #fff8f1;
+                                        bottom: -1.25em;
+                                      ">
                         {% else %}
-                        <div class='image'>
+                            <div class='image'>
                         <img class="thumb" src="/thumbnails/{{ image.id }}.jpg" alt="">
                         {% endif %}
-                    </div>
+                        </div>
                 {% endfor %}
                 </ul>
             {% else %}

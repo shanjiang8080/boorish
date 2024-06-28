@@ -18,6 +18,11 @@
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/tag.css' rel='stylesheet'>
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/log-in.css' rel='stylesheet'>
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/home-alt.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/search.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/log-in.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/profile.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/math-plus.css' rel='stylesheet'>
+
     
     <title>{% block title %} Gallery {% endblock %}</title>
 </head>
@@ -29,29 +34,33 @@
                     <input id="tag_list" class='textbox' type="text" name="tag_list" placeholder="Enter tags..." autocomplete="off" onfocusout="hide_search_suggestions()">
                     <div class="popup_text_box" id="search_box_popup">
                         <!-- to be filled with stuff via JS -->
+                        <img class='note' src='/static/gallery/images/note.svg' style="display: none">
                     </div>    
-                    <input type="submit" value="Search!">
+                    <button type="submit" class="search_button"><i class="gg-search"></i></button>
                 </div>
             </form>
         </div>
-        <div id="home-link">
+        <div id="home-link" class='icon_button'>
             <a href="/gallery/"><i class="gg-home-alt"></i></a>
         </div>  
-        <div id="upload-link">
+        {% if user.is_authenticated %}
+        <div id="upload-link" class='icon_button'>
             <a href="/gallery/upload/"><i class="gg-add-r"></i></a>
         </div>  
-        <div id="tags-link">
+        {% endif %}
+        <div id="tags-link" class='icon_button'>
             <a href="/gallery/tags/"><i class="gg-tag"></i></a>
         </div>  
 
-        <div id="login">
-            {% if user.is_authenticated %} 
-            <p>hey you're logged in</p>
-            {% else %}
-            <p>hey you're not logged in</p>
-            <a href="/gallery/accounts/login/">click the link</a>
-            {% endif %}
-        </div>
+        {% if user.is_authenticated %} 
+        <div id="profile-link" class='icon_button'>
+            <a href=""><i class="gg-profile"></i></a> <!--not making a link for this (yet at least) -->
+        </div>  
+        {% else %}
+        <div id="login-link" class='icon_button'>
+            <a href="/gallery/accounts/login/"><i class="gg-log-in"></i></a>
+        </div>  
+        {% endif %}
     </div>
             <div class='content'>
                 {% block content %}{% endblock %}

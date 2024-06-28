@@ -4,21 +4,38 @@
 <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-left-r.css' rel='stylesheet'>
 <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-right-o.css' rel='stylesheet'>
 <link href='https://unpkg.com/css.gg@2.0.0/icons/css/arrow-right-r.css' rel='stylesheet'>
+
 {% endblock %}
 {% block title %}Tags{% endblock %}
 {% block content %}
     <div id="searchbox">
         <form action="/gallery/tags/" method="get">
-            <input id="tag_search" type="text" name="tag_search" placeholder="Search tags...">
-            <input type="submit" value="Search!">
+            <input id="tag_search" type="text" name="tag_search" placeholder="Search tags..." class='textbox' style='
+                margin-left: 30%;
+                width: 40%;
+                margin-top: 3%;
+                margin-bottom: 5%;'>
+            <button type="submit" class="search_button"><i class="gg-search"></i></button>
         </form>
 </div>
 
-    <div id="tag_container">
-        {% for tag in tags %}
-        <a href="/gallery/?tag_list={{tag.name}}" class="tag {{ tag.color }}">{{tag.name}}: {{tag.image__count}}</a> <br>
-        {% endfor %}
+<div id="tag_page_container">
+<div class="tags">
+    {% for tag in tags %}
+    <div class='tag_paper'>
+        <div class='tag_text'>
+            <a href="/gallery/?tag_list={{tag.name}}" class="link tag {{ tag.color }}">{{tag.name}}
+            </a>
+            <p>{{ tag.image__count }}</p>
+        </div>
+        <div class='hook_con'>
+            <img class='hook' src='/static/gallery/images/hook.svg'>
+        </div>
     </div>
+    {% endfor %}
+</div>    
+</div>
+
     <div class='paginator'>
         {% if tags.has_previous %}
         <a class='page_button' id='first_page' href="?page=1" class=prev><i class="gg-arrow-left-r"></i></a>
@@ -40,22 +57,30 @@
 
     <form action="/gallery/tags/" method="post">
         {% csrf_token %}
-        <label for="tag_upload">Add new tag</label>
-        <input id="tag_upload" name="name" type='text'></input> <!--auto submit by doing onchange="form.submit()"-->
-        <fieldset>
-            <legend>Tag Category</legend>
-            
-            <input name="category" type='radio' id='tag_normal' value="N" checked>
-            <label for="tag_normal">Normal</label><br />
-            <input name="category" type='radio' id='tag_char' value="G">
-            <label for="tag_char">Character</label><br />
-            <input name="category" type='radio' id='tag_artist' value="R">
-            <label for="tag_artist">Artist</label><br />
-            <input name="category" type='radio' id='tag_cprt' value="P">
-            <label for="tag_cprt">Copyright</label><br />
+        <input id="tag_upload" name="name" type="text" class="textbox" placeholder="Add new tag..." style='
+                margin-left: 30%;
+                width: 40%;
+                margin-bottom: 1%;'>
+        <button type="submit" class="search_button"><i class="gg-math-plus" style='right: 5px; top: -4px;'></i></button>
 
-        </fieldset>
+        <div id='choice_holder'>
+            <label class='label'>
+                <input name="category" type='radio' id='tag_normal' value="N" checked />
+                <div class='N'>Normal</div>    
+            </label>
+            <label class='label'>
+                <input name="category" type='radio' id='tag_char' value="G" />
+                <div class='G'>Character</div>                
+            </label>
+            <label class='label'>
+                <input name="category" type='radio' id='tag_artist' value="R" />
+                <div class='R'>Artist</div>                
+            </label>
+            <label class='label'>
+                <input name="category" type='radio' id='tag_cprt' value="P" />
+                <div class='P'>Series</div>                
+            </label>
+        </div>
 
-        <input id='submit' type='submit' value="do it"/>
     </form>
 {% endblock %}

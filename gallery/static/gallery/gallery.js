@@ -8,6 +8,10 @@ function vh(percent) {
     return (percent * w) / 100;
 }
 
+window.addEventListener('scroll', () => {
+    document.body.style.setProperty('--scroll', window.pageYOffset / (document.body.offsetHeight - window.innerHeight));
+  }, false);  
+
 function css_transition(pre, elem) {
     
     // gotta calculate post based on the ratio of the thumbnail
@@ -59,7 +63,7 @@ function css_transition(pre, elem) {
 
     }
     
-    if (window.matchMedia('only screen and (min-width: 480px) and (max-width: 767px)').matches) real_left += 8
+    if (window.matchMedia('only screen and (min-width: 480px) and (max-width: 767px)').matches) real_left += 36
 
     document.getElementById('image_transition').innerHTML = 
     `
@@ -118,7 +122,6 @@ function hide_add_tag_suggestions() {
 
 function unblur_overlay() {
     document.getElementById("container").className = "container unblur";
-
 }
 function blur_overlay() {
     document.getElementById("container").className = "container blur";
@@ -177,12 +180,25 @@ function send_add_tag() {
 
         const tag_spot = document.getElementById("focus_tags")
         // all that needs to happen client-side is that the new tag appears.
-        const newTag = document.createElement("a")
-        newTag.innerHTML = `${str}`
-        newTag.href = `/gallery/?tag_list=${str}`
-        newTag.classList.add("tag", json['color'])
-        tag_spot.appendChild(newTag)
-        tag_spot.appendChild(document.createElement("br"))
+        const tagPaper = document.createElement("div");
+        tagPaper.className = 'tag_paper';
+        // no left part because it's right aligned and such
+        const tagText = document.createElement("div");
+        tagText.className = "tag_text";
+
+        const newTag = document.createElement("a");
+        newTag.innerHTML = `${tag.name}`;
+        newTag.href = `/gallery/?tag_list=${tag.name}`;
+        newTag.classList.add("link", "tag", tag.color);
+
+        const tagHook = document.createElement('div')
+        tagHook.className = 'hook_con';
+        tagHook.innerHTML = "<img class='hook' src='/static/gallery/images/hook.svg'>";
+
+        tag_spot.appendChild(tagPaper);
+        tagPaper.appendChild(tagText);
+        tagText.appendChild(newTag);
+        tagPaper.appendChild(tagHook);
 
 
         //box.appendChild()
@@ -222,7 +238,7 @@ if (TagBoxInput != null) {
         })
         .then((json) => {
             // make it visible
-            box.style.display = "block";
+            box.style.display = "flex";
             
             // delete the things already there...
             box.innerHTML = "";
@@ -232,22 +248,23 @@ if (TagBoxInput != null) {
                 const container = document.createElement("div");
                 container.className = `box_container`;
     
-                // making separators...
+                // making elements...
                 const left = document.createElement('div');
                 left.className = `box_left ${tag.color}`;
                 left.innerHTML = tag.name;
-    
-                const separator = document.createElement('div');
-                separator.className = "box_separator";
-    
+
                 const right = document.createElement('div');
                 right.className = "box_right";
                 right.innerHTML = tag.tag_count;
-    
+
+                const note_con = document.createElement('div');
+                note_con.innerHTML = "<img class='note' src='/static/gallery/images/note.svg'>";
+                note_con.className = 'note_con';
+
                 // adding them
                 container.appendChild(left);
-                container.appendChild(separator);
                 container.appendChild(right);
+                container.appendChild(note_con);
                 
                 // adding an onclick element to the container
                 container.setAttribute('onclick', `autocomplete_add_tag_search("${tag.name}")`)
@@ -349,20 +366,34 @@ for (let i = 0; i < images.length; i++) {
             const tag_spot = document.getElementById("focus_tags")
             tag_spot.innerHTML = "";
             for (const tag of json['tags']) {
-                const newTag = document.createElement("a")
-                newTag.innerHTML = `${tag.name}`
-                newTag.href = `/gallery/?tag_list=${tag.name}`
-                newTag.classList.add("tag", tag.color)
-                tag_spot.appendChild(newTag)
-                tag_spot.appendChild(document.createElement("br"))
+
+                const tagPaper = document.createElement("div");
+                tagPaper.className = 'tag_paper';
+                // no left part because it's right aligned and such
+                const tagText = document.createElement("div");
+                tagText.className = "tag_text";
+
+                const newTag = document.createElement("a");
+                newTag.innerHTML = `${tag.name}`;
+                newTag.href = `/gallery/?tag_list=${tag.name}`;
+                newTag.classList.add("link", "tag", tag.color);
+
+                const tagHook = document.createElement('div')
+                tagHook.className = 'hook_con';
+                tagHook.innerHTML = "<img class='hook' src='/static/gallery/images/hook.svg'>";
+
+                tag_spot.appendChild(tagPaper);
+                tagPaper.appendChild(tagText);
+                tagText.appendChild(newTag);
+                tagPaper.appendChild(tagHook);
             }
 
             // adding votes and publish-date
-            document.getElementById("focus_votes").innerHTML = `votes: ${json['votes']}`
-            document.getElementById("focus_date").innerHTML = `posted: ${json['date']}`
+            // document.getElementById("focus_votes").innerHTML = `votes: ${json['votes']}`;
+            // document.getElementById("focus_date").innerHTML = `posted: ${json['date']}`;
             
             // lock scrolling
-            lock_scrolling()
+            lock_scrolling();
 
             // that's it! I think...
         })

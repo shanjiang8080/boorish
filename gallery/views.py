@@ -72,6 +72,7 @@ def aj_get_matching_tags(request):
                 'color': tag.color,
                 'tag_count': tag.images.count(),
             })
+            if len(tags) > 5: break # so you won't get a billion in some edge case
 
         return JsonResponse({'tags':tags})
     else:

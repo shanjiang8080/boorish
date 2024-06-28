@@ -8,12 +8,21 @@
         <h2 class="error">{{ error }}</h2>
     {% endfor %}
     {% endif %}
-    <form action="/gallery/upload/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="upload_box">Upload Media</label>
-        <input id="upload_box" name="uh" type="file" accept="image/*, video/*" multiple ></input> <!--auto submit by doing onchange="form.submit()"-->
-        <input id='submit' type='submit' value="do it"/>
-    </form>
+    <div class='sidebar' id="upload_content">
+        <form action="/gallery/upload/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for='upload_box' class='custom_file_upload'>Upload Files...</label>
+            <input style="display: none;" id="upload_box" name="uh" type="file" accept="image/*, video/*" multiple onchange="loadFile(event)"></input> <!--auto submit by doing onchange="form.submit()"-->
+            <button type="submit" class="file_submit"><i class="gg-math-plus" style='right: 5px; top: -4px;'></i></button>
+        </form>
+    </div>
+    <div class='gallery' id='upload_gallery'>
+
+    </div>
+
+    {% load static %}
+    <script src="{% static 'gallery/upload.js' %}"></script>
+
 {% else %}
     <p>You must be logged in to upload media.</p>
 {% endif %}

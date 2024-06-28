@@ -29,7 +29,7 @@ SearchBoxInput.addEventListener('input', () => {
     if (input.length < 3) { return; }
 
     // it's not! then make an ajax request
-    const url = `a/search_tag?text=${input}`;
+    const url = `/gallery/a/search_tag?text=${input}`;
     fetch(url)
     .then((response) => {
         if (!response.ok) {
@@ -44,7 +44,7 @@ SearchBoxInput.addEventListener('input', () => {
         }
 
 
-        box.style.display = "block";
+        box.style.display = "flex";
         
         // delete the things already there...
         box.innerHTML = "";
@@ -54,22 +54,24 @@ SearchBoxInput.addEventListener('input', () => {
             const container = document.createElement("div");
             container.className = `box_container`;
 
-            // making separators...
+            // making elements...
             const left = document.createElement('div');
             left.className = `box_left ${tag.color}`;
             left.innerHTML = tag.name;
-
-            const separator = document.createElement('div');
-            separator.className = "box_separator";
 
             const right = document.createElement('div');
             right.className = "box_right";
             right.innerHTML = tag.tag_count;
 
+            const note_con = document.createElement('div');
+            note_con.innerHTML = "<img class='note' src='/static/gallery/images/note.svg'>";
+            note_con.className = 'note_con';
+
             // adding them
             container.appendChild(left);
-            container.appendChild(separator);
             container.appendChild(right);
+            container.appendChild(note_con);
+
             
             // adding an onclick element to the container
             container.setAttribute('onclick', `autocomplete_search("${tag.name}")`)
