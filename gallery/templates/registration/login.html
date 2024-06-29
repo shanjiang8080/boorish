@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+
+{% block content %}
     {% if form.errors %}
     <p>Your username and password didn't match. Please try again.</p>
   {% endif %}
@@ -21,6 +17,14 @@
 
   <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
+    <style>
+      td > input[type='text'], td > input[type='password'] {
+        border-radius: 10px;
+        border: none;
+        padding: 10px 5px;
+      }
+      
+    </style>
     <table>
       <tr>
         <td>{{ form.username.label_tag }}</td>
@@ -31,12 +35,10 @@
         <td>{{ form.password }}</td>
       </tr>
     </table>
-    <input type="submit" value="login">
+    <label for='upload_box' class='custom_file_upload'>Log In</label>
+    <input style="display: none;" id="upload_box" name="uh" type="submit"></input>
+
+
     <input type="hidden" name="next" value="{{ next }}">
   </form>
-
-  {# Assumes you set up the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
-</body>
-</html>
+{% endblock %}
