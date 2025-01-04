@@ -17,14 +17,14 @@ from django.contrib.auth import login, authenticate
 from .models import Image, Tag # tag unused... as of now.
 from django.db.models import Count
 from . import uploads
+from .admin import ImageAdmin, TagAdmin
 import gallery
 # Create your views here.
 IMAGES_PER_PAGE = 50 # obviously too low for now. but to demonstrate. change to 50 for normal.
 
 # AJAX stuff
 def aj_add_tag(request):
-    if request.method == "POST":
-        form = ImageTagForm(request.POST)
+    if request.method == "POST" and request.user.is_authenticated:
         try:
             tag = Tag.objects.get(name=request.POST["name"])
         except gallery.models.Tag.DoesNotExist:
@@ -35,8 +35,22 @@ def aj_add_tag(request):
             return JsonResponse({"status":"Error", "err_code":"duplicate"}, status=400)
         
         file.tags.add(tag)
+    else:
+        return JsonResponse({"status":"error", "err_code":"No permissions or incorrect request type"})
     return JsonResponse({"status":"OK", "color": tag.color})
 
+def aj_remove_tag(request):
+    if request.method == "POST" and request.user.is_authenticated and request.user.has_perm('gallery.delete_tag'):
+        image = Image.objects.get(pk=request.POST['file'])
+        try:
+            tag = Tag.objects.get(name=request.POST['name'])
+        except gallery.models.Tag.DoesNotExist:
+            return JsonResponse({"status":"Error", "err_code":"not a valid tag"}, status=400)
+        if tag in image.tags.all():
+            image.tags.remove(tag)
+        return JsonResponse({"status":"OK"})
+    return JsonResponse({"status":"Error", "err_code":"No permissions"})
+    
 def aj_view_image(request):
     # not sending or retrieving data...
     # not entirely sure how ajax works...
@@ -106,18 +120,19 @@ def detail(request, image_id):
 def unfiltered(request):
     if request.method == "GET":
         form = SearchForm(request.GET)
+        tags = []
         if (form.data.get('tag_list' , '').strip() != ''):
             tags = form.data['tag_list'].split(",")
 
             if tags[-1] in ('', ' '): tags.pop()
 
             images = Image.objects.all()
-            for tag in tags:
+            for i in range(len(tags)):
                 # removing leading/trailing whitespace
-                tag = tag.strip()
+                tags[i] = tags[i].strip()
                 
                 # filtering out unwanted images
-                images = images.filter(tags__name=tag)
+                images = images.filter(tags__name=tags[i])
                 # terminating early if images becomes null
                 if not len(images):
                     break
@@ -134,10 +149,17 @@ def unfiltered(request):
     tag_rank = Ranking()
     for image in page_images:
         tag_rank.update(image.tags.all())
+    
+    # getting selected tags
+    selected_tags = []
+    print(tags)
+    for tag in tags:
+        selected_tags.append(Tag.objects.get(name=tag))
 
     context = {
         "page_images": page_images,
-        "image_tags": tag_rank.get_highest_n(15)[::-1]
+        "image_tags": tag_rank.get_highest_n(15)[::-1],
+        "selected_tags": selected_tags,
     }
     return HttpResponse(template.render(context, request))
 
@@ -148,7 +170,7 @@ def upload(request):
         form = FileFieldForm(request.POST, request.FILES)
         if form.is_valid():
             context["errors"] = uploads.handle_uploaded_file(request.FILES)
-            return HttpResponseRedirect("/gallery/upload/")
+            return HttpResponseRedirect("/upload/")
         else:
             raise ValueError("Invalid... for some reason.")
     else:

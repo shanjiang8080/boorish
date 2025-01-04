@@ -8,7 +8,7 @@
   display: flex;
   z-index: 3;
   position: sticky;
-  top: 0;
+  top: 10px;
   background-color: rgba(226, 198, 198, 0.6); /* temp for debugging */
   backdrop-filter: blur(3px);
   height: 3em;
@@ -52,9 +52,7 @@
   margin-top: 1em;
 }
 
-#focus_add_tag > .search_button {
-  left: -4.5em;
-}
+
 #focus_add_tag > .popup_text_box {
   left: 12px;
 }
@@ -134,7 +132,10 @@ body {
   background-color: #B4DACC;
 }
 
-
+#tag_add_fix {
+  top: 8px;
+  right: 50px;
+}
 
 .container {
   display: flex;
@@ -164,6 +165,9 @@ body {
   position: sticky;
   top: 7vh;
   z-index: 0;
+}
+.tags.hide_scrollbar {
+  overflow-y: inherit;
 }
 
 #tag_page_container {
@@ -312,6 +316,14 @@ a.deactivated {
   #focus_info {
     margin-left: 5px;
   }
+  .tags {
+    top: 0;
+    max-height: 100vh !important;
+    overflow-y: scroll !important;
+  }
+  .tag_left_part {
+    display: none;
+  }
   
 
 }
@@ -322,7 +334,7 @@ a.deactivated {
   #overlay_container {
     flex-direction: column !important;
     max-height: 100%;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
     overflow-x: hidden;
   }
   #focus_image {
@@ -340,7 +352,7 @@ a.deactivated {
   }
 
   #focus_tags {
-    overflow-y: hidden;
+    overflow-y: unset !important;
   }
 
   .tag-con {
@@ -391,6 +403,7 @@ a.deactivated {
   display:flex;
   flex-direction: row;
   align-items: flex-end; /*make it flex-start*/
+  overflow-y: hidden;
 }
 #overlay_bg {
   position: fixed;
@@ -548,15 +561,31 @@ a.deactivated {
   animation-fill-mode: both;
 }
 
+.recolor {
+  animation-name: color_anim;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+
+@keyframes color_anim {
+  from {
+    background-color: rgba(255, 235, 207, 0);
+  }
+  to {
+    background-color: rgba(64, 36, 35, 0.2);
+  }
+
+}
+
+
 @keyframes blur_anim {
   from {
     filter: blur(0px);
-    background-color: rgba(255, 235, 207, 0)
     
   }
   to {
     filter: blur(5px); 
-    background-color: rgba(64, 36, 35, 0.2);
   }
 }
 
@@ -571,6 +600,16 @@ a.deactivated {
 
   }
 }
+
+@keyframes uncolor_anim {
+  from {
+    background-color: rgba(64, 36, 35, 0.2);
+  }
+  to {
+    background-color: rgba(255, 235, 207, 0);
+  }
+}
+
 
 @keyframes unhide {
   0% {
@@ -615,6 +654,13 @@ a.deactivated {
   animation-timing-function: ease-out;
   animation-fill-mode: both;
 }
+.unrecolor {
+  animation-duration: 0.25s;
+  animation-name: uncolor_anim;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
 
 .tag_paper {
   display: flex;
@@ -630,7 +676,7 @@ a.deactivated {
 
 #focus_tags {
   overflow-y: scroll;
-  max-height: 85vh;
+  max-height: calc(85vh + 3px);
   overflow-x: hidden;
 }
 
@@ -643,6 +689,23 @@ a.deactivated {
   }
 
 }
+
+.selected_tags {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.tag_paper.selected_tag {
+  width: 70%;
+  transition: none;
+  position: inherit;
+}
+.selected_tag .tag_text {
+  justify-content: center;
+  align-items: center;
+}
+
 
 .hook {
   transform: rotate(90deg);
@@ -694,7 +757,7 @@ a.deactivated {
 }
 .link__graphic {
   position: absolute;
-  top: 80%;
+  top: 90%;
   left: 0;
   pointer-events: none;
   fill: none;
@@ -756,4 +819,103 @@ a.deactivated {
 }
 .label > input:checked + .P {
   background-color: #f9d0ef;
+}
+
+/* upload stuff copied from codepen */
+.file-area {
+  width: 100%;
+  position: relative;
+  
+  input[type=file] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer !important;
+  }
+  
+  .file-dummy {
+    padding: 30px;
+    background: rgba(255,255,255,0.2);
+    border: 2px dashed rgba(255,255,255,0.2);
+    text-align: center;
+    transition: background 0.3s ease-in-out;
+    
+    .success {
+      display: none;
+    }
+  }
+  
+  &:hover .file-dummy {
+    background: rgba(255,255,255,0.1);
+  }
+  
+  input[type=file]:focus + .file-dummy {
+    outline: 2px solid rgba(255,255,255,0.5);
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+  
+  input[type=file]:valid + .file-dummy {
+    border-color: rgba(120, 255, 57, 0.603);
+    background-color: rgba(0,255,0,0.3);
+
+    .success {
+      display: inline-block;
+    }
+    .default {
+      display: none;
+    }
+  }
+}
+
+#uploadform {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  width: 20vw;
+}
+
+.file_submit {
+  height: 3em;
+  width: 9em;
+  background-color: #FFF8F0;
+  border-radius: 15px;
+}
+.file_submit:disabled {
+  background-color: #fff8f077;
+  cursor: default !important;
+  div {
+    color:#3b1e0d83;
+  }
+}
+.delete {
+  width: fit-content;
+  padding: 16px 15px;
+  border: none;
+  border-radius: 15px;
+  background-color: #febbbc;
+  cursor: pointer;
+}
+#focus_bottom_row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+#focus_delete_tag.toggled {
+  background-color: rgb(255, 65, 90);
+}
+.delete.delete_tag {
+  position: absolute;
+  padding: 5px;
+}
+.hidden {
+  display: none;
 }

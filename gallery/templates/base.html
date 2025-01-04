@@ -29,7 +29,7 @@
 <body class="hide_scrollbar" id='body'>
     <div id="header">
         <div id="searchbox">
-            <form action="/gallery/" method="get">
+            <form action="/" method="get">
                 <div class='searchbox_wrapper'> 
                     <input id="tag_list" class='textbox' type="text" name="tag_list" placeholder="Enter tags..." autocomplete="off" onfocusout="hide_search_suggestions()">
                     <div class="popup_text_box" id="search_box_popup">
@@ -41,15 +41,15 @@
             </form>
         </div>
         <div id="home-link" class='icon_button'>
-            <a href="/gallery/"><i class="gg-home-alt"></i></a>
+            <a href="/"><i class="gg-home-alt"></i></a>
         </div>  
         {% if user.is_authenticated %}
         <div id="upload-link" class='icon_button'>
-            <a href="/gallery/upload/"><i class="gg-add-r"></i></a>
+            <a href="/upload/"><i class="gg-add-r"></i></a>
         </div>  
         {% endif %}
         <div id="tags-link" class='icon_button'>
-            <a href="/gallery/tags/"><i class="gg-tag"></i></a>
+            <a href="/tags/"><i class="gg-tag"></i></a>
         </div>  
 
         {% if user.is_authenticated %} 
@@ -58,7 +58,7 @@
         </div>  
         {% else %}
         <div id="login-link" class='icon_button'>
-            <a href="/gallery/accounts/login/"><i class="gg-log-in"></i></a>
+            <a href="/accounts/login/"><i class="gg-log-in"></i></a>
         </div>  
         {% endif %}
     </div>

@@ -29,7 +29,7 @@ SearchBoxInput.addEventListener('input', () => {
     if (input.length < 3) { return; }
 
     // it's not! then make an ajax request
-    const url = `/gallery/a/search_tag?text=${input}`;
+    const url = `/a/search_tag?text=${input}`;
     fetch(url)
     .then((response) => {
         if (!response.ok) {

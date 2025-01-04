@@ -49,7 +49,6 @@ function css_transition(pre, elem) {
             // now calculate based on real_ratio the width
             real_width = max_height * real_ratio;
             real_left = (con_length - real_width) / 2;
-            console.log("does not touch the sides.");
             
         } else {
             // that means it touches the sides
@@ -93,7 +92,11 @@ function css_transition(pre, elem) {
     }
     `;
     elem.className = "thumb transition";
-    elem.parentElement.className = 'image transition_parent';
+    if (elem.parentElement.className == 'image') {
+        elem.parentElement.className = 'image transition_parent';
+    } else if (elem.parentElement.className == 'image video') {
+        elem.parentElement.className = 'image video transition_parent';
+    }
     // overthinking it. just add another preview with the same src it'll get cached...
 
 }
@@ -134,7 +137,11 @@ function remove_overlay() {
     
     document.getElementById('image_transition').innerHTML = ``;
     document.getElementsByClassName('transition')[0].className = 'thumb';
-    document.getElementsByClassName('transition_parent')[0].className = 'image';
+    if (document.getElementsByClassName('transition_parent')[0].className == 'image video transition_parent') {
+        document.getElementsByClassName('transition_parent')[0].className = 'image video';
+    } else {
+        document.getElementsByClassName('transition_parent')[0].className = 'image';
+    }
     
 
     selected_image = -1;
@@ -147,6 +154,116 @@ function lock_scrolling() {
 }
 function unlock_scrolling() {
     document.getElementById("body").className = "hide_scrollbar";
+}
+
+let delete_tag_bool = false;
+function delete_tag_toggle() {
+    delete_tag_bool = !delete_tag_bool;
+    if (delete_tag_bool) {
+        document.getElementById("focus_delete_tag").className = "delete toggled";
+        // give all the things X buttons
+        let something = document.getElementsByClassName("delete_tag");
+
+        for (let i = 0; i < something.length; i++) {
+            something[i].className = "delete delete_tag";
+        }
+          
+          
+    } else {
+        document.getElementById("focus_delete_tag").className = "delete";
+        let something = document.getElementsByClassName("delete_tag");
+        for (let i = 0; i < something.length; i++) {
+            something[i].className = "delete delete_tag hidden";
+        }
+
+    }
+}
+
+function delete_tag(elem) {
+    const str = elem.nextSibling.firstChild.innerHTML;
+
+    tag_name = elem.nextSibling;
+    tag_link = tag_name.children[0];
+    const headers = {
+        "Access-Control-Origin": "*",
+    }
+
+    let formData = new FormData();
+    formData.append('name', tag_link.innerHTML);
+    formData.append('file', selected_image);
+    formData.append('csrfmiddlewaretoken', document.querySelector("#focus_info > input[type=hidden]").getAttribute("value"));
+    
+
+
+    const url = `a/remove_tag`;
+    fetch(url, {
+        method: "POST",
+        body: formData,
+        credentials: 'same-origin',
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then((json) => {
+        remove_tag_from_list(str)
+    })
+    .catch((error) => {
+        console.log(`Something broke when attempting to remove a tag. This, to be precise: ${error}`);
+    })
+}
+function remove_tag_from_list(str) {
+    console.log(`Remove tag from list... str=${str}`)
+    // get num of children
+    let tags = document.getElementById("focus_tags").children;
+    for (let i = 0; i < tags.length; i++) {
+        let tag = tags[i];
+        if (tag.children[1].firstChild.innerHTML == str) {
+            // it's the same, so remove tag
+            document.getElementById("focus_tags").removeChild(tag);
+            return;    
+        }
+    }
+}
+
+function add_tag_to_list(str, color) {
+    const tag_spot = document.getElementById("focus_tags");
+    // all that needs to happen client-side is that the new tag appears.
+    
+    const delete_button = document.createElement("button");
+    delete_button.className = "delete delete_tag hidden";
+    //delete_button.onclick = "delete_tag(this)"; // this isn't working for some reason.
+    // but, 
+    delete_button.setAttribute('onclick', `delete_tag(this)`)
+
+
+    const delete_icon = document.createElement("i");
+    delete_icon.className = "gg-close";
+
+    
+    const tagPaper = document.createElement("div");
+    tagPaper.className = 'tag_paper';
+    // no left part because it's right aligned and such
+    const tagText = document.createElement("div");
+    tagText.className = "tag_text";
+
+    const newTag = document.createElement("a");
+    newTag.innerHTML = `${str}`;
+    newTag.href = `/?tag_list=${str}`;
+    newTag.classList.add("link", "tag", color);
+
+    const tagHook = document.createElement('div')
+    tagHook.className = 'hook_con';
+    tagHook.innerHTML = "<img class='hook' src='/static/gallery/images/hook.svg'>";
+
+    tag_spot.appendChild(tagPaper);
+    tagPaper.appendChild(delete_button);
+    delete_button.append(delete_icon);
+    tagPaper.appendChild(tagText);
+    tagText.appendChild(newTag);
+    tagPaper.appendChild(tagHook);
 }
 
 function send_add_tag() {
@@ -177,31 +294,7 @@ function send_add_tag() {
         return response.json();
     })
     .then((json) => {
-
-        const tag_spot = document.getElementById("focus_tags")
-        // all that needs to happen client-side is that the new tag appears.
-        const tagPaper = document.createElement("div");
-        tagPaper.className = 'tag_paper';
-        // no left part because it's right aligned and such
-        const tagText = document.createElement("div");
-        tagText.className = "tag_text";
-
-        const newTag = document.createElement("a");
-        newTag.innerHTML = `${tag.name}`;
-        newTag.href = `/gallery/?tag_list=${tag.name}`;
-        newTag.classList.add("link", "tag", tag.color);
-
-        const tagHook = document.createElement('div')
-        tagHook.className = 'hook_con';
-        tagHook.innerHTML = "<img class='hook' src='/static/gallery/images/hook.svg'>";
-
-        tag_spot.appendChild(tagPaper);
-        tagPaper.appendChild(tagText);
-        tagText.appendChild(newTag);
-        tagPaper.appendChild(tagHook);
-
-
-        //box.appendChild()
+        add_tag_to_list(str, json.color)
     })
     .catch((error) => {
         console.log(`Something broke when attempting to add a tag. This, to be precise: ${error}`);
@@ -331,7 +424,6 @@ for (let i = 0; i < images.length; i++) {
                 image_spot.appendChild(newElem)
 
                 newElem.addEventListener('loadedmetadata', function(e){
-                    console.log(`video... width: ${newElem.videoWidth}, height: ${newElem.videoHeight}`);
                     // give the clicked element a transition from its current position to its full position...
                     // both scale it and move it.
                     // scale goes from center btw
@@ -367,25 +459,8 @@ for (let i = 0; i < images.length; i++) {
             tag_spot.innerHTML = "";
             for (const tag of json['tags']) {
 
-                const tagPaper = document.createElement("div");
-                tagPaper.className = 'tag_paper';
-                // no left part because it's right aligned and such
-                const tagText = document.createElement("div");
-                tagText.className = "tag_text";
+                add_tag_to_list(tag.name, tag.color);
 
-                const newTag = document.createElement("a");
-                newTag.innerHTML = `${tag.name}`;
-                newTag.href = `/gallery/?tag_list=${tag.name}`;
-                newTag.classList.add("link", "tag", tag.color);
-
-                const tagHook = document.createElement('div')
-                tagHook.className = 'hook_con';
-                tagHook.innerHTML = "<img class='hook' src='/static/gallery/images/hook.svg'>";
-
-                tag_spot.appendChild(tagPaper);
-                tagPaper.appendChild(tagText);
-                tagText.appendChild(newTag);
-                tagPaper.appendChild(tagHook);
             }
 
             // adding votes and publish-date

@@ -13,6 +13,7 @@ const typeSet = new Set([
     '.mp4',
     '.webm',
 ]);
+const submitbutton = document.querySelector("#fileuploadsubmit");
 
 var loadFile = function(event) {
     var gallery = document.getElementById('upload_gallery');
@@ -60,7 +61,8 @@ var loadFile = function(event) {
             // attach div container to gallery.
             gallery.appendChild(div);
         }
-
+        // enable upload button
+        submitbutton.disabled = false;
     };
     
 };
