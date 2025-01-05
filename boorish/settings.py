@@ -22,19 +22,13 @@ MEDIA_ROOT = str(BASE_DIR / 'gallery' / 'images')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1234567890'
-#os.environ['DJANGO_SECRET_KEY']
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = [
-                'genericgamergamed.mooo.com',
-                '192.168.1.32',
-                '127.0.0.1',
-                'localhost',
-                '0.0.0.0',
-                 ]
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
 
 
 # Application definition
@@ -84,11 +78,13 @@ WSGI_APPLICATION = 'boorish.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gallery', # not sure
-        'USER': 'admin',
-        'PASSWORD': '63646364', # seems... insecure? ¯\_(ツ)_/¯
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.mysql"),
+        "NAME": os.environ.get("SQL_DATABASE", "gallery"),
+        "USER": os.environ.get("SQL_USER", "gallerer"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "gallantandgalling"),
+        "HOST": os.environ.get("SQL_HOST", "db"),
+        "PORT": os.environ.get("SQL_PORT", "3306"),
     }
 }
 
@@ -133,3 +129,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'
