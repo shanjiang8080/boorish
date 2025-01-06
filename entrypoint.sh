@@ -14,7 +14,6 @@ fi
 python manage.py flush --no-input
 python manage.py migrate
 
-
 if [ ! -z "$DJANGO_SUPERUSER_PASSWORD" ]; then
     echo "Creating an admin account with password: $DJANGO_SUPERUSER_PASSWORD"
     # Perform your initialization tasks here
@@ -24,7 +23,7 @@ if [ ! -z "$DJANGO_SUPERUSER_PASSWORD" ]; then
     # Save state to indicate initialization has been performed
     touch /usr/src/boorish/initialized.flag
 else
-    if [ ! -f /path/to/initialized.flag ]; then
+    if [ ! -f /usr/src/boorish/initialized.flag ]; then
         echo "Creating an admin account with password: boorish_dev"
         # Perform your initialization tasks here
         export DJANGO_SUPERUSER_PASSWORD=boorish_dev

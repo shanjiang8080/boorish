@@ -420,7 +420,7 @@ for (let i = 0; i < images.length; i++) {
                 newElem.id = "focus_file";
 
                 // add element to image
-                newElem.src = `/${json['file_name']}`;
+                newElem.src = `/media/${json['file_name']}`;
                 image_spot.appendChild(newElem)
 
                 newElem.addEventListener('loadedmetadata', function(e){
@@ -440,8 +440,8 @@ for (let i = 0; i < images.length; i++) {
                 newElem.id = "focus_file";
 
                 // add element to image
-                newElem.src = `/${json['file_name']}`;
-                newElem.style.backgroundImage = `url("/thumbnails/${image_id}.jpg")`;
+                newElem.src = `/media/${json['file_name']}`;
+                newElem.style.backgroundImage = `url("/media/thumbnails/${image_id}.jpg")`;
                 newElem.style.backgroundPosition = 'center';
                 newElem.style.backgroundRepeat = 'no-repeat';
                 newElem.style.backgroundSize = 'contain';

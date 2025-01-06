@@ -5,7 +5,6 @@ FROM python:3.11.4-slim-buster
 WORKDIR /usr/src/boorish
 
 COPY ./boorish /usr/src/boorish 
-COPY wait-for-it.sh /usr/src/boorish/
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -16,6 +15,9 @@ RUN apt update && apt -y install pkg-config
 RUN apt-get install -y netcat
 RUN apt -y install libmariadb-dev
 RUN apt-get install -y gcc
+RUN apt-get install -y imagemagick
+RUN apt-get install -y ffmpeg
+
 
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
@@ -28,7 +30,6 @@ RUN chmod +x /usr/src/boorish/entrypoint.sh
 
 # copy project
 COPY . .
-# delete create admin flag if there
-RUN rm ./initialized.flag
+
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/boorish/entrypoint.sh"]

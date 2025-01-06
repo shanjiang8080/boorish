@@ -193,7 +193,7 @@ def tags(request):
         form = TagForm(request.POST)
         if form.is_valid():
             Tag(name=form.cleaned_data["name"], color=form.cleaned_data["category"]).save()
-            return HttpResponseRedirect("/gallery/tags/")
+            return HttpResponseRedirect("/tags/")
 
         else:
             raise ValueError(request.POST)

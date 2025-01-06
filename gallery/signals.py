@@ -16,21 +16,22 @@ def rename_callback(sender, **kwargs):
         initial_path = file.file.path
         ext = "." + file.file.name.split('.')[-1]
         file.file.name = str(file.id) + ext
-        new_path = settings.MEDIA_ROOT + "/" + file.file.name
+        new_path = settings.MEDIA_ROOT / file.file.name
         
         os.rename(initial_path, new_path)
 
         # for videos, generate a thumbnail
         if ext in (".mp4", ".webm"):
             file.is_video = True
-            img_output_path = settings.MEDIA_ROOT + f"/thumbnails/{file.id}.jpg"
-            subprocess.Popen(['ffmpeg', '-ss', '00:00:00.000', '-i', new_path, '-vframes', '1', '-vf', 'scale=350:-1', img_output_path])
+            img_output_path = settings.MEDIA_ROOT / "thumbnails" / f"{file.id}.jpg"
+            subprocess.Popen(['ffmpeg', '-ss', '00:00:00.000', '-y', '-i', str(new_path), '-vframes', '1', '-vf', 'scale=350:-1', img_output_path])
         else:
             if ext in ('.gif', '.webp'):
                 if subprocess.check_output(['identify', '-format', '%n', new_path]) != '1':
                     file.is_animated = True
-            img_output_path = settings.MEDIA_ROOT + f"/thumbnails/{file.id}.jpg"
-            subprocess.Popen(['convert', new_path + '[0]', '-resize', '350x', img_output_path])
+            img_output_path = settings.MEDIA_ROOT / "thumbnails" / f"{file.id}.jpg"
+            subprocess.Popen(['convert', str(new_path) + '[0]', '-resize', '350x', img_output_path])
+
         file.save()
 
         

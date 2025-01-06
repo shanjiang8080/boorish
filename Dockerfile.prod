@@ -7,7 +7,6 @@ FROM python:3.11.4-slim-buster as builder
 WORKDIR /usr/src/boorish
 
 COPY ./boorish /usr/src/boorish 
-COPY wait-for-it.sh /usr/src/boorish/
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -46,11 +45,16 @@ ENV HOME=/home/boorish
 ENV APP_HOME=/home/boorish/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+RUN mkdir -p $APP_HOME/mediafiles/thumbnails
 WORKDIR $APP_HOME
 
 # install dependencies
 RUN apt-get update
 RUN apt-get install -y netcat
+RUN apt-get install -y imagemagick
+RUN apt-get install -y ffmpeg
+
 # ?
 RUN apt -y install libmariadb-dev
 COPY --from=builder /usr/src/boorish/wheels /wheels
@@ -71,9 +75,6 @@ RUN chown -R boorish:boorish $APP_HOME
 
 # change to the app user
 USER boorish
-
-# delete create admin flag if there
-RUN rm ./initialized.flag
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/boorish/web/entrypoint.prod.sh"]

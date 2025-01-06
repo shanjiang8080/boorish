@@ -695,6 +695,7 @@ a.deactivated {
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  padding-top: 10px;
 }
 .tag_paper.selected_tag {
   width: 70%;
@@ -724,7 +725,7 @@ a.deactivated {
   text-align: center;
   font-size: 0.8em;
   position: relative;
-
+  min-width: 100px;
 }
 .tag_text {
   background-color: #fff8f1;
@@ -879,7 +880,8 @@ a.deactivated {
   align-items: center;
   flex-wrap: nowrap;
   flex-direction: column;
-  width: 20vw;
+  min-width: 20vw;
+  padding-top: 10px;
 }
 
 .file_submit {
