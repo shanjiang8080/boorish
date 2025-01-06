@@ -13,7 +13,7 @@ fi
 
 
 
-python manage.py flush --no-input
+# python manage.py flush --no-input don't do this!
 python manage.py migrate --noinput
 python manage.py collectstatic --no-input --clear
 
