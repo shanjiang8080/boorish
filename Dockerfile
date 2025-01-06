@@ -28,6 +28,7 @@ RUN chmod +x /usr/src/boorish/entrypoint.sh
 
 # copy project
 COPY . .
-
+# delete create admin flag if there
+RUN rm ./initialized.flag
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/boorish/entrypoint.sh"]

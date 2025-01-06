@@ -72,5 +72,8 @@ RUN chown -R boorish:boorish $APP_HOME
 # change to the app user
 USER boorish
 
+# delete create admin flag if there
+RUN rm ./initialized.flag
+
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/boorish/web/entrypoint.prod.sh"]
