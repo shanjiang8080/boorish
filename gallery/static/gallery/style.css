@@ -209,6 +209,7 @@ body {
   columns: 5 200px;
   column-gap: 0.5rem;
   margin: 0 auto;
+  min-height: calc(100vh - 10em);
   div {
     width: 150px;
     margin: 0 0.5rem 0.5rem 0;
@@ -322,6 +323,9 @@ a.deactivated {
     overflow-y: scroll !important;
   }
   .tag_left_part {
+    display: none;
+  }
+  .link__graphic {
     display: none;
   }
   

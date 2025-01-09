@@ -8,7 +8,7 @@ class AdminMediaWidget(forms.widgets.FileInput):
     def render(self, name, value, attrs=None, renderer=None):
         output = []
         if value and hasattr(value, "url"):
-            if value.url.endswith(('jpg', 'jpeg', 'png', 'gif')):
+            if value.url.endswith(('jpg', 'jpeg', 'png', 'gif', 'webp')):
                 output.append(f'<img src="{value.url}" width="300" height="auto" />')
             elif value.url.endswith(('mp4', 'webm', 'ogg')):
                 output.append(f'<video width="300" height="auto" controls>'

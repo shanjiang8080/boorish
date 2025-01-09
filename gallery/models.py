@@ -67,4 +67,4 @@ class Image(models.Model):
         return self.file.name # not very helpful but waddya gonna do
     
     def thumbnail_url(self):
-        return f"/thumbnails/{self.id}.jpg"
+        return f"/media/thumbnails/{self.id}.jpg"

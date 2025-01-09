@@ -14,10 +14,11 @@ fi
 
 
 # python manage.py flush --no-input don't do this!
+python manage.py makemigrations # if you update the system, you want things to carry over.
 python manage.py migrate --noinput
 python manage.py collectstatic --no-input --clear
 
-if [ ! -z "$DJANGO_SUPERUSER_PASSWORD" ]; then
+if [ ! -z "$DJANGO_SUPERUSER_PASSWORD" ] && [ ! -f ./initialized.flag ]; then # fix this to be proper and
     echo "Creating an admin account with password: $DJANGO_SUPERUSER_PASSWORD"
     # Perform your initialization tasks here
     python manage.py createsuperuser --noinput --username=admin --email=admin@example.com
@@ -39,5 +40,7 @@ else
         echo "not creating an admin account"
     fi
 fi
+
+gunicorn boorish.wsgi:application --bind 0.0.0.0:7999
 
 exec "$@"

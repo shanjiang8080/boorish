@@ -49,7 +49,7 @@ def delete_callback(sender, **kwargs):
         path = file.file.path
         os.remove(path)
 
-        thumb = settings.MEDIA_ROOT + f"/thumbnails/{file.id}.jpg"
+        thumb = settings.MEDIA_ROOT / "thumbnails" / f"{file.id}.jpg"
         os.remove(thumb)
         
 

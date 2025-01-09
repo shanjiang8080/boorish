@@ -29,9 +29,9 @@ DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"] + os.environ.get("ALLOWED_HOSTS", "").split(" ")
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://127.0.0.1:1337"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://127.0.0.1:1337"] + os.environ.get("TRUSTED_ORIGINS", "").split(" ")
 
 # Application definition
 
@@ -83,8 +83,8 @@ DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.mysql"),
         "NAME": os.environ.get("SQL_DATABASE", "gallery"),
-        "USER": os.environ.get("SQL_USER", "gallerer"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "gallantandgalling"),
+        "USER": os.environ.get("SQL_USER", ""),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", ""),
         "HOST": os.environ.get("SQL_HOST", "db"),
         "PORT": os.environ.get("SQL_PORT", "3306"),
     }

@@ -76,5 +76,11 @@ RUN chown -R boorish:boorish $APP_HOME
 # change to the app user
 USER boorish
 
+# set environment variables (web)
+ENV DEBUG=0
+ENV SQL_ENGINE=django.db.backends.mysql
+ENV SQL_HOST=db
+ENV DATABASE=mariadb
+
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/boorish/web/entrypoint.prod.sh"]
