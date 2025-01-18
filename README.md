@@ -1,4 +1,3 @@
-# Boorish Github README   
 Boorish is a simple booru-like image gallery created in django.  
 Demoserver available here: [https://boorishdemo.shanjiang.ca](https://boorishdemo.shanjiang.ca)
 ## Installation:   
