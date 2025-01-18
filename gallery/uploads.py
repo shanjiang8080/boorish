@@ -19,7 +19,7 @@ def handle_uploaded_file(f) -> list[str]:
     return errors
 
 def validate_file_type(f):
-    ext = f.name.split('.')[-1]
+    ext = f.name.split('.')[-1].lower()
     if ext not in (
         'png', 
         'avif',
