@@ -1,5 +1,6 @@
 # Boorish Github README   
-Boorish is a simple booru-like image gallery created in django.    
+Boorish is a simple booru-like image gallery created in django.  
+Demoserver available here: [https://boorishdemo.shanjiang.ca](https://boorishdemo.shanjiang.ca)
 ## Installation:   
 Install via docker: [https://hub.docker.com/r/shanjiang8080/boorish](https://hub.docker.com/r/shanjiang8080/boorish)    
 Boorish is a simple booru-like image gallery created in django.   
@@ -89,12 +90,7 @@ configs:
 
 
 
-```
-## Environment Variables:   
-- `DJANGO\_SUPERUSER\_PASSWORD`: By default, an admin user is created with the username `admin` and the password specified. If no password is given, it will default to the password `boorish\_web`.   
-- `TRUSTED\_ORIGINS`: This is the    
-- `ALLOWED\_HOSTS`: This is the space-separated list of domains that the app can exist on. `localhost` and `127.0.0.1` are allowed by default.   
-   
+```   
    
 By default, the site is accessible on port 1337. To change the port, change the port in the docker compose file.   
    
