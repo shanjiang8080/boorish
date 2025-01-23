@@ -56,6 +56,7 @@ services:
       target: /etc/nginx/conf.d/default.conf
     ports:
       - 1337:80
+    restart: always
     depends_on:
       - web
 
