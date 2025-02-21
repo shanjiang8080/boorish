@@ -1,10 +1,14 @@
 Boorish is a simple booru-like image gallery created in django.  
 Demoserver available here: [https://boorishdemo.shanjiang.ca](https://boorishdemo.shanjiang.ca)
+***
+![main page](https://raw.githubusercontent.com/shanjiang8080/boorish/refs/heads/main/preview_1.png)
+![detail view](https://raw.githubusercontent.com/shanjiang8080/boorish/refs/heads/main/preview_2.png)
+![filter view](https://raw.githubusercontent.com/shanjiang8080/boorish/refs/heads/main/preview_3.png)
 ## Installation:   
 Install via docker: [https://hub.docker.com/r/shanjiang8080/boorish](https://hub.docker.com/r/shanjiang8080/boorish)    
 Boorish is a simple booru-like image gallery created in django.   
 # Installation   
-The docker-compose.yml and two files called .web\_env and .db\_env in the same directory.
+To install, include a docker-compose.yml and two files called .web\_env and .db\_env in the same directory.
 Your docker-compose.yml should look like this:   
 ```
 services:
@@ -87,10 +91,22 @@ configs:
           alias /home/boorish/web/mediafiles/;
         }
       }
-
-
-
-```   
+```
+The .db_env file should look like this:
+```
+MYSQL_ROOT_PASSWORD=[root_password]
+MYSQL_ROOT_HOST=%
+MYSQL_DATABASE=[mysql_database]
+MYSQL_USER=[mysql_user]
+MYSQL_PASSWORD=[mysql_password]
+```
+The .web_env file should look like this:
+```
+SQL_DATABASE=[mysql_database]
+SQL_USER=[mysql_user]
+SQL_PASSWORD=[mysql_password]
+```
+Note that `[mysql_database]`, `[mysql_user]`, and `[mysql_password]` should be identical across both files.
    
 By default, the site is accessible on port 1337. To change the port, change the port in the docker compose file.   
    
